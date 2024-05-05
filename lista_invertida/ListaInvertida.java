@@ -171,6 +171,10 @@ public class ListaInvertida {
 
   }
 
+  public ListaInvertida(){
+    
+  }
+
   public ListaInvertida(int n, String nd, String nc) throws Exception {
     quantidadeDadosPorBloco = n;
     nomeArquivoDicionario = nd;

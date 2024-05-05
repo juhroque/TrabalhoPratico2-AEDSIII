@@ -12,7 +12,7 @@ public class ArquivoLivros extends Arquivo<Livro> {
 
   HashExtensivel<ParIsbnId> indiceIndiretoISBN;
   ArvoreBMais<ParIntInt> relLivrosDaCategoria;
-  ListaInvertida lista = new ListaInvertida(0, null, null);
+  ListaInvertida lista = new ListaInvertida();
 
   public ArquivoLivros() throws Exception {
     super("livros", Livro.class.getConstructor());
@@ -32,6 +32,13 @@ public class ArquivoLivros extends Arquivo<Livro> {
     obj.setID(id);
     indiceIndiretoISBN.create(new ParIsbnId(obj.getIsbn(), obj.getID()));
     relLivrosDaCategoria.create(new ParIntInt(obj.getIdCategoria(), obj.getID()));
+
+    String tituloSemStopWords = removerStopWords(obj.getTitulo());
+    for (String palavra : tituloSemStopWords.split(" ")) {
+      lista.create(palavra, id);
+    }
+    
+
     return id;
   }
 
@@ -59,6 +66,18 @@ public class ArquivoLivros extends Arquivo<Livro> {
     Livro livroAntigo = super.read(novoLivro.getID());
     if (livroAntigo != null) {
 
+      boolean alterouTitulo = livroAntigo.getTitulo().equals(novoLivro.getTitulo());
+      if (alterouTitulo) {
+        String tituloSemStopWords = removerStopWords(novoLivro.getTitulo());
+        for (String palavra : tituloSemStopWords.split(" ")) {
+
+          //conferir se a palavra já existe na lista invertida
+          if (lista.read(palavra) == null){
+            lista.create(palavra, novoLivro.getID());
+          }
+        }
+      }
+
       // Testa alteração do ISBN
       if (livroAntigo.getIsbn().compareTo(novoLivro.getIsbn()) != 0) {
         indiceIndiretoISBN.delete(ParIsbnId.hashIsbn(livroAntigo.getIsbn()));
@@ -75,6 +94,7 @@ public class ArquivoLivros extends Arquivo<Livro> {
       return super.update(novoLivro);
     }
     return false;
+
   }
 
   public static String removerStopWords(String tituloLivro) throws IOException {
