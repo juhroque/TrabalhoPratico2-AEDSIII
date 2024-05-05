@@ -31,7 +31,7 @@ public class ListaInvertida {
   RandomAccessFile arqBlocos;
   int quantidadeDadosPorBloco;
 
-  public static ArrayList<String> stopwords = new ArrayList<>();
+  protected static ArrayList<String> stopwords = new ArrayList<>();
 
   class Bloco {
 

@@ -98,12 +98,15 @@ public class ArquivoLivros extends Arquivo<Livro> {
   public static String prepararPalavra(String palavra) {
     palavra = palavra.toLowerCase();
     // remover caracteres especiais e replace acentos pelo caracter normal
+    palavra = palavra.replace("ç", "c");
     palavra = palavra.replaceAll("[áàâã]", "a");
     palavra = palavra.replaceAll("[éèê]", "e");
     palavra = palavra.replaceAll("[íìî]", "i");
     palavra = palavra.replaceAll("[óòôõ]", "o");
     palavra = palavra.replaceAll("[úùû]", "u");
     palavra = palavra.replaceAll("[^a-zA-Z0-9]", "");
+    palavra = palavra.trim();
+
     return palavra;
   }
 
