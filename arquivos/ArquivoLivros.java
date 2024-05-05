@@ -22,7 +22,7 @@ public class ArquivoLivros extends Arquivo<Livro> {
         "dados/livros_isbn.hash_d.db",
         "dados/livros_isbn.hash_c.db");
     relLivrosDaCategoria = new ArvoreBMais<>(ParIntInt.class.getConstructor(), 4, "dados/livros_categorias.btree.db");
-    lista = new ListaInvertida(0, "listaDicionario.txt", "listaBlocos.txt");
+    lista = new ListaInvertida(40, "listaDicionario.txt", "listaBlocos.txt");
 
   }
 
