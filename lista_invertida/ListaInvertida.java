@@ -18,6 +18,7 @@ import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.RandomAccessFile;
 import java.util.ArrayList;
@@ -30,7 +31,7 @@ public class ListaInvertida {
   RandomAccessFile arqBlocos;
   int quantidadeDadosPorBloco;
 
-  ArrayList<String> stopwords = new ArrayList<>();
+  public static ArrayList<String> stopwords = new ArrayList<>();
 
   class Bloco {
 
@@ -175,8 +176,8 @@ public class ListaInvertida {
     nomeArquivoDicionario = nd;
     nomeArquivoBlocos = nc;
 
-    //arqDicionario = new RandomAccessFile(nomeArquivoDicionario, "rw");
-    // arqBlocos = new RandomAccessFile(nomeArquivoBlocos, "rw");
+    arqDicionario = new RandomAccessFile(nomeArquivoDicionario, "rw");
+    arqBlocos = new RandomAccessFile(nomeArquivoBlocos, "rw");
   }
 
   // Insere um dado na lista da chave de forma NÃO ORDENADA
@@ -396,19 +397,19 @@ public class ListaInvertida {
     }
   }
 
-  public ArrayList<String> loadStopwords() throws Exception{
-    RandomAccessFile arq = new RandomAccessFile("lista_invertida\\stop_words.txt", "r");
+  public static ArrayList<String> loadStopwords() throws FileNotFoundException, IOException {
+    RandomAccessFile arq;
+    arq = new RandomAccessFile("lista_invertida\\stop_words.txt", "r");
 
     while (arq.getFilePointer() != arq.length()) {
       String palavra = arq.readLine();
-      stopwords.add(palavra);
+      stopwords.add(palavra.trim());
     }
 
-    
     arq.close();
     return stopwords;
-  }
 
+  }
 
 
 }

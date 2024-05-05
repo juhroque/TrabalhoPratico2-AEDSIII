@@ -7,16 +7,12 @@ import arquivos.ArquivoLivros;
 import entidades.Autor;
 import entidades.Categoria;
 import entidades.Livro;
-import lista_invertida.ListaInvertida;
 
 public class Principal {
 
   private static Scanner console = new Scanner(System.in);
 
   public static void main(String[] args) throws Exception {
-
-    ListaInvertida lista = new ListaInvertida(0, null, null);
-    System.out.println(lista.loadStopwords());
 
     try {
 

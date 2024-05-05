@@ -1,15 +1,18 @@
 package arquivos;
 
+import java.io.IOException;
 import aeds3.Arquivo;
 import aeds3.ArvoreBMais;
 import aeds3.HashExtensivel;
 import aeds3.ParIntInt;
 import entidades.Livro;
+import lista_invertida.ListaInvertida;
 
 public class ArquivoLivros extends Arquivo<Livro> {
 
   HashExtensivel<ParIsbnId> indiceIndiretoISBN;
   ArvoreBMais<ParIntInt> relLivrosDaCategoria;
+  ListaInvertida lista = new ListaInvertida(0, null, null);
 
   public ArquivoLivros() throws Exception {
     super("livros", Livro.class.getConstructor());
@@ -19,6 +22,7 @@ public class ArquivoLivros extends Arquivo<Livro> {
         "dados/livros_isbn.hash_d.db",
         "dados/livros_isbn.hash_c.db");
     relLivrosDaCategoria = new ArvoreBMais<>(ParIntInt.class.getConstructor(), 4, "dados/livros_categorias.btree.db");
+    lista = new ListaInvertida(0, "listaDicionario.txt", "listaBlocos.txt");
 
   }
 
@@ -72,4 +76,35 @@ public class ArquivoLivros extends Arquivo<Livro> {
     }
     return false;
   }
+
+  public static String removerStopWords(String tituloLivro) throws IOException {
+    var stopWords = ListaInvertida.loadStopwords();
+    String[] palavras = tituloLivro.split(" ");
+    StringBuilder novoTitulo = new StringBuilder();
+    for (String palavra : palavras) {
+
+      palavra = prepararPalavra(palavra);
+
+      boolean isStopWord = stopWords.contains(palavra);
+      if (!isStopWord) {
+        System.out.println("Palavra: " + palavra);
+        novoTitulo.append(palavra);
+        novoTitulo.append(" ");
+      }
+    }
+    return novoTitulo.toString().trim();
+  }
+
+  public static String prepararPalavra(String palavra) {
+    palavra = palavra.toLowerCase();
+    // remover caracteres especiais e replace acentos pelo caracter normal
+    palavra = palavra.replaceAll("[áàâã]", "a");
+    palavra = palavra.replaceAll("[éèê]", "e");
+    palavra = palavra.replaceAll("[íìî]", "i");
+    palavra = palavra.replaceAll("[óòôõ]", "o");
+    palavra = palavra.replaceAll("[úùû]", "u");
+    palavra = palavra.replaceAll("[^a-zA-Z0-9]", "");
+    return palavra;
+  }
+
 }
