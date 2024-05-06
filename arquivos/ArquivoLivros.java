@@ -66,14 +66,16 @@ public class ArquivoLivros extends Arquivo<Livro> {
     Livro livroAntigo = super.read(novoLivro.getID());
     if (livroAntigo != null) {
 
-      boolean alterouTitulo = livroAntigo.getTitulo().equals(novoLivro.getTitulo());
+      boolean alterouTitulo = !(livroAntigo.getTitulo().equals(novoLivro.getTitulo()));
       if (alterouTitulo) {
         String tituloSemStopWords = removerStopWords(novoLivro.getTitulo());
         for (String palavra : tituloSemStopWords.split(" ")) {
 
           //conferir se a palavra já existe na lista invertida
-          if (lista.read(palavra) == null){
+          if (lista.read(palavra) != null){
             lista.create(palavra, novoLivro.getID());
+          } else {
+            lista.delete(palavra, novoLivro.getID());
           }
         }
       }
