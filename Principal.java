@@ -73,6 +73,8 @@ public class Principal {
       new File("dados/livros_isbn.hash_d.db").delete();
       new File("dados/livros_isbn.hash_c.db").delete();
       new File("dados/livros_categorias.btree.db").delete();
+      new File("dados/listaDicionario.txt").delete();
+      new File("dados/listaBlocos.txt").delete();
 
       ArquivoLivros arqLivros = new ArquivoLivros();
       ArquivoCategorias arqCategorias = new ArquivoCategorias();

@@ -37,6 +37,7 @@ public class ArquivoLivros extends Arquivo<Livro> {
     for (String palavra : tituloSemStopWords.split(" ")) {
       lista.create(palavra, id);
     }
+   
     
 
     return id;
@@ -70,13 +71,12 @@ public class ArquivoLivros extends Arquivo<Livro> {
       if (alterouTitulo) {
         String tituloSemStopWords = removerStopWords(novoLivro.getTitulo());
         for (String palavra : tituloSemStopWords.split(" ")) {
+          lista.create(palavra, novoLivro.getID());
+        }
 
-          //conferir se a palavra já existe na lista invertida
-          if (lista.read(palavra) != null){
-            lista.create(palavra, novoLivro.getID());
-          } else {
-            lista.delete(palavra, novoLivro.getID());
-          }
+        String tituloAntigoSemStopWords = removerStopWords(livroAntigo.getTitulo());
+        for (String palavra : tituloAntigoSemStopWords.split(" ")) {
+          lista.delete(palavra, livroAntigo.getID());
         }
       }
 
