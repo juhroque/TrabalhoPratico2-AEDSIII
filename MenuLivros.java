@@ -10,6 +10,7 @@
 // -------------------------------------------------------
 
 import java.text.NumberFormat;
+import java.util.ArrayList;
 import java.util.Scanner;
 
 import arquivos.ArquivoCategorias;
@@ -120,7 +121,7 @@ public class MenuLivros {
           incluirLivro();
           break;
         case 2:
-          buscarLivro();
+          menuBuscar();
           break;
         case 3:
           alterarLivro();
@@ -190,6 +191,59 @@ public class MenuLivros {
 
     System.out.println("\nLivro armazenado!");
 
+  }
+
+  public void menuBuscar() {
+    System.out.println("\n\n (1) Buscar por ISBN\n (2) Buscar por palavra chave\n Resp:");
+    char text = console.nextLine().charAt(0);
+    switch (text) {
+      case '1':
+        buscarLivro();
+        break;
+      case '2':
+        buscarLivroByTitle();
+      default:
+        break;
+    }
+  }
+
+  public void buscarLivroByTitle() {
+    System.out.print("\nTitulo ou palavra chave: ");
+    String resp = console.nextLine();
+    try {
+      ArrayList<Livro> livros = arqLivros.searchByTitle(resp);
+      Livro[] books = livros.toArray(new Livro[livros.size()]);
+      set(books);
+      for (Livro livro : books) {
+        if(livro != null) {
+          mostraLivro(livro);
+        }
+      }
+    } catch (Exception e) {
+      e.printStackTrace();
+    }
+  }
+
+  public boolean isIn(Livro[] livros, Livro livro) {
+    for(int i = 0; i < livros.length; i++) {
+      if(livro != null && livros[i] != null && livros[i].getTitulo().equals(livro.getTitulo())) {
+        return true;
+      }
+    }
+    return false;
+  }
+
+  public void set(Livro[] livros) {
+    Livro[] newLivros = new Livro[livros.length];
+    int j = 0;
+    for(int i = 0; i < livros.length; i++) {
+      if(!isIn(newLivros, livros[i])) {
+        newLivros[j++] = livros[i];
+      }
+    }
+    for(int i = 0; i < livros.length; i++) {
+      livros[i] = newLivros[i];
+    }
   }
 
   // ---------------------

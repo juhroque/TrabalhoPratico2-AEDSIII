@@ -1,6 +1,9 @@
 package arquivos;
 
 import java.io.IOException;
+import java.text.Normalizer;
+import java.util.ArrayList;
+
 import aeds3.Arquivo;
 import aeds3.ArvoreBMais;
 import aeds3.HashExtensivel;
@@ -51,14 +54,55 @@ public class ArquivoLivros extends Arquivo<Livro> {
     return super.read(id);
   }
 
+  public ArrayList<Integer> countExpection(ArrayList<Integer> arr,int countExpected) {
+    int count = 0;
+    ArrayList<Integer> ids = new ArrayList<>();
+    for(int i = 0; i < arr.size(); i++) {
+      for(int j = 0; j < arr.size(); j++) {
+        if(arr.get(i) == arr.get(j)) {
+          count++;
+        }
+      }
+      if(count == countExpected) {
+        ids.add(arr.get(i));
+      }
+      count = 0;
+    }
+    return ids;
+  }
+
+  public ArrayList<Livro> searchByTitle(String title) throws Exception {
+    String[] words = removerStopWords(title).split(" ");
+    ArrayList<Livro> livros = new ArrayList<>();
+    ArrayList<Integer> ids = new ArrayList<>();
+    for (int i = 0; i < words.length; i++) {
+      int[] tmp = lista.read(words[i]);
+      for(int j : tmp) {
+        ids.add(j);
+      }
+    }
+    ArrayList<Integer> temp = countExpection(ids, words.length);
+    for(int i = 0; i < temp.size(); i++) {
+      livros.add(super.read(temp.get(i)));
+    }
+
+    return livros;
+  }
+
   @Override
   public boolean delete(int id) throws Exception {
     Livro obj = super.read(id);
     if (obj != null)
       if (indiceIndiretoISBN.delete(ParIsbnId.hashIsbn(obj.getIsbn()))
           &&
-          relLivrosDaCategoria.delete(new ParIntInt(obj.getIdCategoria(), obj.getID())))
-        return super.delete(id);
+          relLivrosDaCategoria.delete(new ParIntInt(obj.getIdCategoria(), obj.getID()))) {
+            System.out.println(obj.getTitulo());
+            String[] text = removerStopWords(obj.getTitulo()).split(" ");
+            for (String string : text) {
+              lista.delete(string, id);
+            }
+            return super.delete(id);
+          }
     return false;
   }
 
@@ -106,7 +150,7 @@ public class ArquivoLivros extends Arquivo<Livro> {
     for (String palavra : palavras) {
 
       palavra = prepararPalavra(palavra);
-
+      System.out.println(palavra);
       boolean isStopWord = stopWords.contains(palavra);
       if (!isStopWord) {
         System.out.println("Palavra: " + palavra);
